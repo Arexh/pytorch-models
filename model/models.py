@@ -1,6 +1,7 @@
 import torch.nn as nn
 import torch.nn.functional as F
 from base import BaseModel
+from model.rs.wide_deep import WideDeep
 
 
 class MnistModel(BaseModel):
@@ -20,3 +21,8 @@ class MnistModel(BaseModel):
         x = F.dropout(x, training=self.training)
         x = self.fc2(x)
         return F.log_softmax(x, dim=1)
+
+
+class WideDeepModel(WideDeep):
+    def __init__(self, num_classes=10):
+        super(WideDeepModel, self).__init__(num_classes)
