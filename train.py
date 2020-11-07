@@ -21,13 +21,12 @@ def main(config):
     logger = config.get_logger('train')
 
     # setup data_loader instances
-    # data_loader = config.init_obj('data_loader', module_data)
-    # valid_data_loader = data_loader.split_validation()
+    data_loader = config.init_obj('data_loader', module_data)
+    valid_data_loader = data_loader.split_validation()
 
     # build model architecture, then print to console
     model = config.init_obj('arch', module_arch)
     logger.info(model)
-    1 / 0
 
     # get function handles of loss and metrics
     criterion = getattr(module_loss, config['loss'])

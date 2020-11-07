@@ -29,7 +29,7 @@ class CriteoDataset(torch.utils.data.Dataset):
         https://www.csie.ntu.edu.tw/~r01922136/kaggle-2014-criteo.pdf
     """
 
-    def __init__(self, dataset_path=None, cache_path='.criteo', rebuild_cache=False, min_threshold=10):
+    def __init__(self, dataset_path=None, cache_path='.criteo', rebuild_cache=False, min_threshold=0):
         self.NUM_FEATS = 39
         self.NUM_INT_FEATS = 13
         self.min_threshold = min_threshold

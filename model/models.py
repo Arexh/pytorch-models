@@ -2,6 +2,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 from base import BaseModel
 from model.rs.wide_deep import WideDeep
+from model.rs.lr import LR
 
 
 class MnistModel(BaseModel):
@@ -23,6 +24,11 @@ class MnistModel(BaseModel):
         return F.log_softmax(x, dim=1)
 
 
-class WideDeepModel(WideDeep):
-    def __init__(self, num_classes=10):
-        super(WideDeepModel, self).__init__(num_classes)
+class LRModel(LR):
+    def __init__(self,
+                 dense_feat_dim,
+                 sparse_feat_dim,
+                 feature_size):
+        super(LRModel, self).__init__(dense_feat_dim,
+                                      sparse_feat_dim,
+                                      feature_size)

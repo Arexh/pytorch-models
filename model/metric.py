@@ -1,4 +1,5 @@
 import torch
+import sklearn.metrics
 
 
 def accuracy(output, target):
@@ -18,3 +19,17 @@ def top_k_acc(output, target, k=3):
         for i in range(k):
             correct += torch.sum(pred[:, i] == target).item()
     return correct / len(target)
+
+
+def log_loss(output, target):
+    output = output.cpu()
+    target = target.cpu()
+    with torch.no_grad():
+        return sklearn.metrics.log_loss(target.cpu().numpy(), output.numpy())
+
+
+def roc_auc_score(output, target):
+    output = output.cpu()
+    target = target.cpu()
+    with torch.no_grad():
+        return sklearn.metrics.roc_auc_score(target.numpy(), output.numpy())
