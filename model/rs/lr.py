@@ -10,9 +10,9 @@ class LR(BaseModel):
                  dense_feat_dim,
                  sparse_feat_dim,
                  feature_size,
-                 init_std=0.0001,
-                 seed=1024,
-                 embedding_size=8):
+                 embedding_size,
+                 init_std,
+                 seed):
         super().__init__()
 
         torch.manual_seed(seed)

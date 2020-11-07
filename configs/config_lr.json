@@ -1,26 +1,28 @@
 {
     "name": "Criteo_Wide_Deep",
-    "n_gpu": 1,
+    "n_gpu": 4,
 
     "arch": {
         "type": "LRModel",
         "args": {
             "dense_feat_dim": 13,
             "sparse_feat_dim": 26,
-            "feature_size": [1186,530,264474,103567,260,15,10667,543,4,28256,4659,222452,3059,27,8579,172323,11,3764,1804,5,200210,16,16,36846,70,27959]
+            "embedding_size": 10,
+            "feature_size": [1396, 552, 2110015, 586007, 290, 22, 11996, 608, 3, 61411, 5265, 1776949, 3128, 26, 12463, 1258743, 10, 4925, 2093, 4, 1550831, 17, 15, 121464, 91, 77735]
         }
     },
     "data_loader": {
         "type": "MyCriteoLoader",
         "args":{
-            "data_dir": "./dataset/criteo_medium/train.csv",
-            "sparse_norm": true,
+            "data_dir": "./dataset/criteo_large/train.csv",
+            "sparse_norm": false,
             "train": true,
             "rebuild_cache": false,
-            "batch_size": 50000,
+            "batch_size": 5000,
             "shuffle": true,
-            "validation_split": 0.2,
-            "num_workers": 4
+            "validation_split": 0.3,
+            "num_workers": 8,
+            "pin_memory": true
         }
     },
     "optimizer": {
@@ -45,10 +47,10 @@
 
         "save_dir": "saved/",
         "save_period": 1,
-        "verbosity": 1,
+        "verbosity": 2,
         
         "monitor": "min val_loss",
-        "early_stop": 10,
+        "early_stop": 5,
 
         "tensorboard": true
     }

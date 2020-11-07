@@ -28,7 +28,13 @@ class LRModel(LR):
     def __init__(self,
                  dense_feat_dim,
                  sparse_feat_dim,
-                 feature_size):
+                 feature_size,
+                 embedding_size=8,
+                 init_std=0.0001,
+                 seed=1024):
         super(LRModel, self).__init__(dense_feat_dim,
                                       sparse_feat_dim,
-                                      feature_size)
+                                      feature_size,
+                                      embedding_size,
+                                      init_std,
+                                      seed)

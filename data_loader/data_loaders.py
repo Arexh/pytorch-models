@@ -33,6 +33,7 @@ class MyCriteoLoader(BaseDataLoader):
                  sparse_norm=False,
                  cache_path='cache/criteo',
                  rebuild_cache=False,
+                 pin_memory=False,
                  train=True,
                  shuffle=True,
                  validation_split=0.0,
@@ -43,4 +44,4 @@ class MyCriteoLoader(BaseDataLoader):
                                 cache_path=cache_path,
                                 rebuild_cache=rebuild_cache,
                                 train=train)
-        super().__init__(self.dataset, batch_size, shuffle, validation_split, num_workers)
+        super().__init__(self.dataset, batch_size, shuffle, validation_split, num_workers, pin_memory)
