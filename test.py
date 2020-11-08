@@ -17,8 +17,8 @@ def main(config):
         batch_size=512,
         shuffle=False,
         validation_split=0.0,
-        training=False,
-        num_workers=2
+        num_workers=8,
+        train=False
     )
 
     # build model architecture
@@ -54,7 +54,7 @@ def main(config):
             #
 
             # computing loss, metrics on test set
-            loss = loss_fn(output, target)
+            loss = loss_fn(output, target.float())
             batch_size = data.shape[0]
             total_loss += loss.item() * batch_size
             for i, metric in enumerate(metric_fns):

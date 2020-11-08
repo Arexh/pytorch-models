@@ -4,7 +4,7 @@ import torch
 from model.activation import activation_layer
 
 
-class DNN(nn.Module):
+class DNNLayer(nn.Module):
     def __init__(self,
                  inputs_dim,
                  hidden_units,
@@ -12,9 +12,8 @@ class DNN(nn.Module):
                  dropout_rate=0,
                  use_bn=False,
                  init_std=0.0001,
-                 seed=1024,
-                 device='cpu'):
-        super(DNN, self).__init__()
+                 seed=1024):
+        super(DNNLayer, self).__init__()
         self.dropout_rate = dropout_rate
         self.dropout = nn.Dropout(dropout_rate)
         self.seed = seed
@@ -36,8 +35,6 @@ class DNN(nn.Module):
         for name, tensor in self.linears.named_parameters():
             if 'weight' in name:
                 nn.init.normal_(tensor, mean=0, std=init_std)
-
-        self.to(device)
 
     def forward(self, inputs):
         deep_input = inputs

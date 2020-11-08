@@ -50,7 +50,6 @@ class MyCriteo(torch.utils.data.Dataset):
             else:
                 data[self.dense_features] = MinMaxScaler(
                     feature_range=(0, 1)).fit_transform(data[self.dense_features])
-            feature_data = data[self.feature_names]
             self.feature_size = [len(data.iloc[:, i].unique())
                                  for i in range(len(data.columns))]
             self.length = len(data)

@@ -41,9 +41,15 @@ class Trainer(BaseTrainer):
         for batch_idx, (data, target) in enumerate(self.data_loader):
             data, target = data.to(self.device), target.to(self.device)
 
-            self.optimizer.zero_grad()
             output = self.model(data)
             loss = self.criterion(output, target.float())
+
+            # regularization_loss = 0
+            # for param in self.model.parameters():
+            #     regularization_loss += torch.sum(torch.abs(param))
+            # loss += 0.0001 * regularization_loss
+
+            self.optimizer.zero_grad()
             loss.backward()
             self.optimizer.step()
 
