@@ -25,6 +25,12 @@ def inf_loop(data_loader):
     for loader in repeat(data_loader):
         yield from loader
 
+def filter_values_with_threadhold(dataframe, threadhold, filled_value):
+    for field in dataframe.columns:
+        counts = dataframe[field].value_counts()
+        filtered_nums = counts[counts < threadhold].index
+        dataframe[field].replace(filtered_nums, filled_value, inplace=True)
+
 class MetricTracker:
     def __init__(self, *keys, writer=None):
         self.writer = writer
