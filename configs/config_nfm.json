@@ -1,29 +1,28 @@
 {
-    "name": "Criteo_Wide_Deep",
+    "name": "Criteo_NFM",
     "n_gpu": 1,
 
     "arch": {
-        "type": "WideDeepModel",
+        "type": "NFMModel",
         "args": {
             "dense_feat_dim": 13,
             "sparse_feat_dim": 26,
             "embedding_size": 8,
-            "feature_size": [1460, 583, 10131227, 2202608, 305, 24, 12517, 633, 3, 93145, 5683, 8351593, 3194, 27, 14992, 5461306, 10, 5652, 2173, 4, 7046547, 18, 15, 286181, 105, 142572],
+            "feature_size": [1396, 552, 2110015, 586007, 290, 22, 11996, 608, 3, 61411, 5265, 1776949, 3128, 26, 12463, 1258743, 10, 4925, 2093, 4, 1550831, 17, 15, 121464, 91, 77735],
             "dnn_dropout": 0.5,
-            "dnn_hidden_units": [400, 400, 400]
+            "dnn_hidden_units": [128, 128]
         }
     },
     "data_loader": {
         "type": "MyCriteoLoader",
         "args":{
-            "data_dir": "~/HuiOhYoung/deepmodels/data/raw/train.txt",
-            "cache_path": "cache/criteo_complete",
+            "data_dir": "./dataset/criteo_large/train.csv",
             "sparse_norm": false,
             "train": true,
             "rebuild_cache": false,
-            "batch_size": 50000,
+            "batch_size": 5000,
             "shuffle": true,
-            "validation_split": 0.1,
+            "validation_split": 0.3,
             "num_workers": 8,
             "pin_memory": true
         }
@@ -41,7 +40,7 @@
     "lr_scheduler": {
         "type": "StepLR",
         "args": {
-            "step_size": 1,
+            "step_size": 50,
             "gamma": 0.1
         }
     },
@@ -51,7 +50,7 @@
         "save_dir": "saved/",
         "save_period": 999,
         "verbosity": 2,
-        
+
         "monitor": "min val_loss",
         "early_stop": 5,
 

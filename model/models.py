@@ -4,6 +4,7 @@ import torch.nn.functional as F
 from base import BaseModel
 from model.rs.wide_deep import WideDeep
 from model.rs.dnn import DNN
+from model.rs.nfm import NFM
 from model.rs.lr import LR
 
 
@@ -88,3 +89,27 @@ class WideDeepModel(WideDeep):
                                             dnn_activation=dnn_activation,
                                             dnn_use_bn=dnn_use_bn,
                                             dnn_dropout=dnn_dropout)
+
+
+class NFMModel(NFM):
+    def __init__(self,
+                 dense_feat_dim,
+                 sparse_feat_dim,
+                 feature_size,
+                 embedding_size,
+                 seed=1024,
+                 dnn_hidden_units=[400, 400, 400],
+                 init_std=0.001,
+                 dnn_activation='relu',
+                 dnn_use_bn=False,
+                 dnn_dropout=0):
+        super(NFMModel, self).__init__(dense_feat_dim,
+                                  sparse_feat_dim,
+                                  feature_size,
+                                  embedding_size,
+                                  init_std,
+                                  seed,
+                                  dnn_hidden_units=dnn_hidden_units,
+                                  dnn_activation=dnn_activation,
+                                  dnn_use_bn=dnn_use_bn,
+                                  dnn_dropout=dnn_dropout)
