@@ -1,0 +1,59 @@
+{
+    "name": "Criteo_DCN",
+    "n_gpu": 1,
+
+    "arch": {
+        "type": "DCNModel",
+        "args": {
+            "dense_feat_dim": 13,
+            "sparse_feat_dim": 26,
+            "embedding_size": 8,
+            "feature_size": [1396, 552, 2110015, 586007, 290, 22, 11996, 608, 3, 61411, 5265, 1776949, 3128, 26, 12463, 1258743, 10, 4925, 2093, 4, 1550831, 17, 15, 121464, 91, 77735],
+            "dnn_dropout": 0.5,
+            "dnn_hidden_units": [128, 128]
+        }
+    },
+    "data_loader": {
+        "type": "MyCriteoLoader",
+        "args":{
+            "data_dir": "./dataset/criteo_large/train.csv",
+            "sparse_norm": false,
+            "train": true,
+            "rebuild_cache": false,
+            "batch_size": 5000,
+            "shuffle": true,
+            "validation_split": 0.3,
+            "num_workers": 8,
+            "pin_memory": true
+        }
+    },
+    "optimizer": {
+        "type": "Adam",
+        "args":{
+            "lr": 0.001,
+            "weight_decay": 1e-5,
+            "amsgrad": true
+        }
+    },
+    "loss": "bce_log_loss",
+    "metrics": ["roc_auc_score"],
+    "lr_scheduler": {
+        "type": "StepLR",
+        "args": {
+            "step_size": 50,
+            "gamma": 0.1
+        }
+    },
+    "trainer": {
+        "epochs": 500,
+
+        "save_dir": "saved/",
+        "save_period": 999,
+        "verbosity": 2,
+
+        "monitor": "min val_loss",
+        "early_stop": 5,
+
+        "tensorboard": true
+    }
+}
