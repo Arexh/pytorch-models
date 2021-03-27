@@ -35,7 +35,7 @@ class MyCriteo(torch.utils.data.Dataset):
             print('Building cache...')
             cache_start_time = time.time()
             # build cache
-            data = pd.read_csv(data_dir, names=['label'] + self.feature_names)
+            data = pd.read_csv(data_dir, names=['label'] + self.feature_names, sep='\t')
             # fill Nan data
             data[self.sparse_features] = data[self.sparse_features].fillna('-1', )
             data[self.dense_features] = data[self.dense_features].fillna(0,)

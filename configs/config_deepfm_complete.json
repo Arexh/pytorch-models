@@ -1,9 +1,9 @@
 {
-    "name": "Criteo_Wide_Deep",
+    "name": "Criteo_DeepFM",
     "n_gpu": 1,
 
     "arch": {
-        "type": "WideDeepModel",
+        "type": "DeepFMModel",
         "args": {
             "dense_feat_dim": 13,
             "sparse_feat_dim": 26,

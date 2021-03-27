@@ -74,3 +74,16 @@ class PredictionLayer(nn.Module):
         if self.task == "binary":
             output = torch.sigmoid(output)
         return output
+
+
+# from https://github.com/shenweichen/DeepCTR-Torch/blob/d18ea26c09ccc16541dd7985d6ba0a8895bc288d/deepctr_torch/layers/interaction.py#L12
+class FM(nn.Module):
+    def __init__(self):
+        super(FM, self).__init__()
+        
+    def forward(self, X):
+        square_of_sum = torch.pow(torch.sum(X, dim=1, keepdim=True), 2)
+        sum_of_square = torch.sum(X * X, dim=1, keepdim=True)
+        cross_term = square_of_sum - sum_of_square
+        cross_term = 0.5 * torch.sum(cross_term, dim=2, keepdim=False)
+        return cross_term
