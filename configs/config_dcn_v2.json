@@ -1,29 +1,30 @@
 {
-    "name": "Criteo_DCN",
+    "name": "Criteo_DCNV2",
     "n_gpu": 1,
 
     "arch": {
-        "type": "DCNModel",
+        "type": "DCNV2Model",
         "args": {
             "dense_feat_dim": 13,
             "sparse_feat_dim": 26,
-            "embedding_size": 8,
+            "embedding_size": 32,
             "feature_size": [1396, 552, 2110015, 586007, 290, 22, 11996, 608, 3, 61411, 5265, 1776949, 3128, 26, 12463, 1258743, 10, 4925, 2093, 4, 1550831, 17, 15, 121464, 91, 77735],
             "dnn_dropout": 0.5,
-            "dnn_hidden_units": [128, 128]
+            "dnn_hidden_units": [400, 400, 400]
         }
     },
     "data_loader": {
         "type": "MyCriteoLoader",
         "args":{
-            "data_dir": "./dataset/criteo_large/train.csv",
+            "data_dir": "./dataset/criteo_medium/train.txt",
+            "cache_path": "cache/criteo_medium",
             "sparse_norm": false,
             "train": true,
             "rebuild_cache": false,
-            "batch_size": 5000,
+            "batch_size": 200,
             "shuffle": true,
-            "validation_split": 0.3,
-            "num_workers": 8,
+            "validation_split": 0.1,
+            "num_workers": 4,
             "pin_memory": true
         }
     },
@@ -31,7 +32,7 @@
         "type": "Adam",
         "args":{
             "lr": 0.001,
-            "weight_decay": 1e-5,
+            "weight_decay": 0,
             "amsgrad": true
         }
     },
@@ -40,7 +41,7 @@
     "lr_scheduler": {
         "type": "StepLR",
         "args": {
-            "step_size": 50,
+            "step_size": 100,
             "gamma": 0.1
         }
     },
@@ -50,7 +51,7 @@
         "save_dir": "saved/",
         "save_period": 999,
         "verbosity": 2,
-
+        
         "monitor": "min val_loss",
         "early_stop": 5,
 

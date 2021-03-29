@@ -4,10 +4,10 @@ import torch.nn.functional as F
 from base import BaseModel
 from model.rs.wide_deep import WideDeep
 from model.rs.dnn import DNN
-from model.rs.dcn import DCN
 from model.rs.nfm import NFM
 from model.rs.lr import LR
 from model.rs.deepfm import DeepFM
+from model.rs.dcnv2 import DCNV2
 
 
 class MnistModel(BaseModel):
@@ -106,39 +106,15 @@ class NFMModel(NFM):
                  dnn_use_bn=False,
                  dnn_dropout=0):
         super(NFMModel, self).__init__(dense_feat_dim,
-                                  sparse_feat_dim,
-                                  feature_size,
-                                  embedding_size,
-                                  init_std,
-                                  seed,
-                                  dnn_hidden_units=dnn_hidden_units,
-                                  dnn_activation=dnn_activation,
-                                  dnn_use_bn=dnn_use_bn,
-                                  dnn_dropout=dnn_dropout)
-
-
-class DCNModel(DCN):
-    def __init__(self,
-                 dense_feat_dim,
-                 sparse_feat_dim,
-                 feature_size,
-                 embedding_size,
-                 seed=1024,
-                 dnn_hidden_units=[400, 400, 400],
-                 init_std=0.001,
-                 dnn_activation='relu',
-                 dnn_use_bn=False,
-                 dnn_dropout=0):
-        super(DCNModel, self).__init__(dense_feat_dim,
-                                  sparse_feat_dim,
-                                  feature_size,
-                                  embedding_size,
-                                  init_std,
-                                  seed,
-                                  dnn_hidden_units=dnn_hidden_units,
-                                  dnn_activation=dnn_activation,
-                                  dnn_use_bn=dnn_use_bn,
-                                  dnn_dropout=dnn_dropout)
+                                       sparse_feat_dim,
+                                       feature_size,
+                                       embedding_size,
+                                       init_std,
+                                       seed,
+                                       dnn_hidden_units=dnn_hidden_units,
+                                       dnn_activation=dnn_activation,
+                                       dnn_use_bn=dnn_use_bn,
+                                       dnn_dropout=dnn_dropout)
 
 
 class DeepFMModel(DeepFM):
@@ -154,12 +130,36 @@ class DeepFMModel(DeepFM):
                  dnn_use_bn=False,
                  dnn_dropout=0):
         super(DeepFMModel, self).__init__(dense_feat_dim,
-                                            sparse_feat_dim,
-                                            feature_size,
-                                            embedding_size,
-                                            init_std,
-                                            seed,
-                                            dnn_hidden_units=dnn_hidden_units,
-                                            dnn_activation=dnn_activation,
-                                            dnn_use_bn=dnn_use_bn,
-                                            dnn_dropout=dnn_dropout)
+                                          sparse_feat_dim,
+                                          feature_size,
+                                          embedding_size,
+                                          init_std,
+                                          seed,
+                                          dnn_hidden_units=dnn_hidden_units,
+                                          dnn_activation=dnn_activation,
+                                          dnn_use_bn=dnn_use_bn,
+                                          dnn_dropout=dnn_dropout)
+
+
+class DCNV2Model(DCNV2):
+    def __init__(self,
+                 dense_feat_dim,
+                 sparse_feat_dim,
+                 feature_size,
+                 embedding_size,
+                 seed=1024,
+                 dnn_hidden_units=[400, 400, 400],
+                 init_std=0.001,
+                 dnn_activation='relu',
+                 dnn_use_bn=False,
+                 dnn_dropout=0):
+        super(DCNV2Model, self).__init__(dense_feat_dim,
+                                          sparse_feat_dim,
+                                          feature_size,
+                                          embedding_size,
+                                          init_std,
+                                          seed,
+                                          dnn_hidden_units=dnn_hidden_units,
+                                          dnn_activation=dnn_activation,
+                                          dnn_use_bn=dnn_use_bn,
+                                          dnn_dropout=dnn_dropout)

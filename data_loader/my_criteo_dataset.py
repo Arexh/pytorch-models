@@ -61,9 +61,9 @@ class MyCriteo(torch.utils.data.Dataset):
             np.save(cache_feat_size_npy_path, self.feature_size)
             print('Building cache finish, time:', time.time() - cache_start_time, 'seconds')
         else:
-            self.raw_data = np.load(cache_raw_npy_path, mmap_mode='r')
-            self.labels = np.load(cache_label_npy_path, mmap_mode='r')
-            self.feature_size = np.load(cache_feat_size_npy_path, mmap_mode='r')
+            self.raw_data = np.load(cache_raw_npy_path)
+            self.labels = np.load(cache_label_npy_path)
+            self.feature_size = np.load(cache_feat_size_npy_path)
             self.length = len(self.raw_data)
         print('Processing finish, time:', time.time() - start_time, 'seconds')
 
