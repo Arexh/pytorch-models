@@ -25,10 +25,12 @@ class MovieLens1MWithPrices(torch.utils.data.Dataset):
         # npy file path
         cache_raw_npy_path = os.path.join(cache_path, 'train_raw_cache.npy' if train else 'eval_raw_cache.npy')
         cache_label_npy_path = os.path.join(cache_path, 'train_label_cache.npy' if train else 'eval_label_cache.npy')
+        cache_price_npy_path = os.path.join(cache_path, 'train_price_cache.npy' if train else 'eval_price_cache.npy')
 
         if rebuild_cache \
              or not os.path.isfile(cache_raw_npy_path) \
-             or not os.path.isfile(cache_label_npy_path):
+             or not os.path.isfile(cache_label_npy_path) \
+             or not os.path.isfile(cache_price_npy_path):
             print('Building cache...')
             cache_start_time = time.time()
             # build cache
@@ -44,6 +46,8 @@ class MovieLens1MWithPrices(torch.utils.data.Dataset):
             # nomalize rating
             data.loc[data['rating'] < 3, 'rating'] = 0
             data.loc[data['rating'] > 3, 'rating'] = 1
+            self.prices = data['price'].copy()
+            print(self.prices)
             # sparse feature encoder: String -> Integer
             for spare_feature in self.sparse_features:
                 encoder = LabelEncoder()
@@ -52,8 +56,6 @@ class MovieLens1MWithPrices(torch.utils.data.Dataset):
             data[self.dense_features] = MinMaxScaler(
                     feature_range=(0, 1)).fit_transform(data[self.dense_features])
             self.labels = data['rating']
-            # self.feature_size = [len(data.iloc[:, i].unique())
-            #                      for i in range(len(data.columns))]
             self.feature_size = [len(data[i].iloc[:].unique())
                                  for i in self.sparse_features]
             self.length = len(data)
@@ -61,19 +63,21 @@ class MovieLens1MWithPrices(torch.utils.data.Dataset):
             print(self.feature_size)
             print(data.head())
             print(self.labels)
+            print(self.prices)
             ensure_dir(cache_path)
             np.save(cache_raw_npy_path, self.raw_data)
             np.save(cache_label_npy_path, self.labels)
+            np.save(cache_price_npy_path, self.prices)
             print('Building cache finish, time:', time.time() - cache_start_time, 'seconds')
         else:
             self.raw_data = np.load(cache_raw_npy_path)
             self.labels = np.load(cache_label_npy_path)
-            # self.feature_size = np.load(cache_feat_size_npy_path)
+            self.prices = np.load(cache_price_npy_path)
             self.length = len(self.raw_data)
         print('Processing finish, time:', time.time() - start_time, 'seconds')
 
     def __getitem__(self, index):
-        return self.raw_data[index], self.labels[index]
+        return self.raw_data[index], self.labels[index], self.prices[index]
 
     def __len__(self):
         return self.length

@@ -3,6 +3,7 @@ import torch
 from torchvision.utils import make_grid
 from base import BaseTrainer
 from utils import inf_loop, MetricTracker
+import inspect
 
 
 class MAMOTrainer(BaseTrainer):
@@ -38,7 +39,7 @@ class MAMOTrainer(BaseTrainer):
         """
         self.model.train()
         self.train_metrics.reset()
-        for batch_idx, (data, target) in enumerate(self.data_loader):
+        for batch_idx, (data, target, price) in enumerate(self.data_loader):
             data, target = data.to(self.device), target.to(self.device)
 
             output = self.model(data)
@@ -49,9 +50,13 @@ class MAMOTrainer(BaseTrainer):
             self.optimizer.step()
 
             self.writer.set_step((epoch - 1) * self.len_epoch + batch_idx)
-            self.train_metrics.update('loss', loss.item())
+
             for met in self.metric_ftns:
-                self.train_metrics.update(met.__name__, met(output, target))
+                para_nums = len(inspect.getargspec(met)[0])
+                if para_nums == 2:
+                    self.train_metrics.update(met.__name__, met(output, target))
+                elif para_nums == 3:
+                    self.train_metrics.update(met.__name__, met(output, target, price))
 
             if batch_idx % self.log_step == 0:
                 self.logger.debug('Train Epoch: {} {} Loss: {:.6f}'.format(
@@ -82,7 +87,7 @@ class MAMOTrainer(BaseTrainer):
         self.model.eval()
         self.valid_metrics.reset()
         with torch.no_grad():
-            for batch_idx, (data, target) in enumerate(self.valid_data_loader):
+            for batch_idx, (data, target, price) in enumerate(self.valid_data_loader):
                 data, target = data.to(self.device), target.to(self.device)
 
                 output = self.model(data)
@@ -91,7 +96,11 @@ class MAMOTrainer(BaseTrainer):
                 self.writer.set_step((epoch - 1) * len(self.valid_data_loader) + batch_idx, 'valid')
                 self.valid_metrics.update('loss', loss.item())
                 for met in self.metric_ftns:
-                    self.valid_metrics.update(met.__name__, met(output, target))
+                    para_nums = len(inspect.getargspec(met)[0])
+                    if para_nums == 2:
+                        self.train_metrics.update(met.__name__, met(output, target))
+                    elif para_nums == 3:
+                        self.train_metrics.update(met.__name__, met(output, target, price))
                 # self.writer.add_image('input', make_grid(data.cpu(), nrow=8, normalize=True))
 
         # add histogram of model parameters to the tensorboard

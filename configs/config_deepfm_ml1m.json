@@ -36,7 +36,7 @@
         }
     },
     "loss": "bce_log_loss",
-    "metrics": ["roc_auc_score"],
+    "metrics": ["roc_auc_score", "roc_auc_score_with_weight"],
     "lr_scheduler": {
         "type": "StepLR",
         "args": {
