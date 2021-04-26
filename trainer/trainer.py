@@ -44,11 +44,6 @@ class Trainer(BaseTrainer):
             output = self.model(data)
             loss = self.criterion(output, target.float())
 
-            # regularization_loss = 0
-            # for param in self.model.parameters():
-            #     regularization_loss += torch.sum(torch.abs(param))
-            # loss += 0.0001 * regularization_loss
-
             self.optimizer.zero_grad()
             loss.backward()
             self.optimizer.step()

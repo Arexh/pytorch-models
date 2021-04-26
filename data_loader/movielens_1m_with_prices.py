@@ -20,7 +20,7 @@ class MovieLens1MWithPrices(torch.utils.data.Dataset):
         # define column names
         self.sparse_features = ["userId", "gender", "age", "occupation", "zip", "movieId"]
         self.dense_features = ["price", "timestamp"]
-        self.feature_names = self.sparse_features + self.dense_features
+        self.feature_names = self.dense_features + self.sparse_features
 
         # npy file path
         cache_raw_npy_path = os.path.join(cache_path, 'train_raw_cache.npy' if train else 'eval_raw_cache.npy')
@@ -54,9 +54,11 @@ class MovieLens1MWithPrices(torch.utils.data.Dataset):
             self.labels = data['rating']
             # self.feature_size = [len(data.iloc[:, i].unique())
             #                      for i in range(len(data.columns))]
+            self.feature_size = [len(data[i].iloc[:].unique())
+                                 for i in self.sparse_features]
             self.length = len(data)
             self.raw_data = data[self.feature_names].values
-            # print(self.feature_size)
+            print(self.feature_size)
             print(data.head())
             print(self.labels)
             ensure_dir(cache_path)

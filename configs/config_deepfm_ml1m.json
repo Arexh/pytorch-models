@@ -8,7 +8,7 @@
             "dense_feat_dim": 2,
             "sparse_feat_dim": 6,
             "embedding_size": 8,
-            "feature_size": [1396, 552, 2110015, 586007, 290, 22, 11996, 608, 3, 61411, 5265, 1776949, 3128, 26, 12463, 1258743, 10, 4925, 2093, 4, 1550831, 17, 15, 121464, 91, 77735],
+            "feature_size": [6040, 2, 7, 21, 3439, 2539],
             "dnn_dropout": 0.5,
             "dnn_hidden_units": [16, 16, 16]
         }
@@ -20,7 +20,7 @@
             "cache_path": "cache/ml-1m",
             "train": true,
             "rebuild_cache": false,
-            "batch_size": 200,
+            "batch_size": 512,
             "shuffle": true,
             "validation_split": 0.1,
             "num_workers": 4,
@@ -30,8 +30,8 @@
     "optimizer": {
         "type": "Adam",
         "args":{
-            "lr": 0.001,
-            "weight_decay": 0,
+            "lr": 0.002,
+            "weight_decay": 2e-5,
             "amsgrad": true
         }
     },
@@ -52,7 +52,7 @@
         "verbosity": 2,
         
         "monitor": "min val_loss",
-        "early_stop": 5,
+        "early_stop": 1000,
 
         "tensorboard": true
     }
