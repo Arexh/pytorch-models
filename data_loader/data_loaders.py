@@ -1,5 +1,6 @@
 from data_loader.criteo_dataset import CriteoDataset
 from data_loader.my_criteo_dataset import MyCriteo
+from data_loader.movielens_1m_with_prices import MovieLens1MWithPrices
 from torchvision import datasets, transforms
 from base import BaseDataLoader
 
@@ -41,6 +42,25 @@ class MyCriteoLoader(BaseDataLoader):
         self.data_dir = data_dir
         self.dataset = MyCriteo(data_dir=data_dir,
                                 sparse_norm=sparse_norm,
+                                cache_path=cache_path,
+                                rebuild_cache=rebuild_cache,
+                                train=train)
+        super().__init__(self.dataset, batch_size, shuffle, validation_split, num_workers, pin_memory)
+
+
+class MovieLens1MWithPricesLoader(BaseDataLoader):
+    def __init__(self,
+                 data_dir,
+                 batch_size,
+                 cache_path='cache/ml-1m',
+                 rebuild_cache=False,
+                 pin_memory=False,
+                 train=True,
+                 shuffle=True,
+                 validation_split=0.0,
+                 num_workers=1):
+        self.data_dir = data_dir
+        self.dataset = MovieLens1MWithPrices(data_dir=data_dir,
                                 cache_path=cache_path,
                                 rebuild_cache=rebuild_cache,
                                 train=train)
