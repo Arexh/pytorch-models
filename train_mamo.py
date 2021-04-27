@@ -6,6 +6,7 @@ import data_loader.data_loaders as module_data
 import model.loss as module_loss
 import model.metric as module_metric
 import model.models as module_arch
+from model.optimizer import MyAdam
 from parse_config import ConfigParser
 from trainer import MAMOTrainer
 
@@ -31,12 +32,12 @@ def main(config):
     logger.info(model)
 
     # get function handles of loss and metrics
-    criterion = getattr(module_loss, config['loss'])
+    criterion = [module_loss.bce_log_loss, module_loss.bce_log_loss_with_weight]
     metrics = [getattr(module_metric, met) for met in config['metrics']]
 
     # build optimizer, learning rate scheduler. delete every lines containing lr_scheduler for disabling scheduler
     trainable_params = filter(lambda p: p.requires_grad, model.parameters())
-    optimizer = config.init_obj('optimizer', torch.optim, trainable_params)
+    optimizer = MyAdam(trainable_params)
     # optimizer = FTRL(trainable_params, lr=0.01, alpha=1.0, beta=1.0, l1=0.12, l2=0.12)
 
     lr_scheduler = config.init_obj('lr_scheduler', torch.optim.lr_scheduler, optimizer)
@@ -45,7 +46,8 @@ def main(config):
                       config=config,
                       data_loader=data_loader,
                       valid_data_loader=valid_data_loader,
-                      lr_scheduler=lr_scheduler)
+                      lr_scheduler=lr_scheduler,
+                      trainable_params=trainable_params)
 
     trainer.train()
 

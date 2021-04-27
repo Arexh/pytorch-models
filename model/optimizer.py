@@ -1,5 +1,7 @@
 import torch
 from torch.optim.optimizer import Optimizer
+from torch.optim import Adam
+import numpy as np
 
 
 class FTRL(Optimizer):
@@ -27,6 +29,16 @@ class FTRL(Optimizer):
 
         defaults = dict(lr=lr, alpha=alpha, beta=beta, l1=l1, l2=l2)
         super(FTRL, self).__init__(params, defaults)
+
+    def get_gradient(self):
+        gradients = []
+        for group in self.param_groups:
+            for p in group["params"]:
+                if p.grad is None:
+                    continue
+                grad = p.grad.data
+                gradients.append(grad)
+        return gradients
 
     def step(self, closure=None):
         """Performs a single optimization step.
@@ -64,3 +76,18 @@ class FTRL(Optimizer):
                 p.data[z.abs() < group["l1"]] = 0
 
         return loss
+
+
+class MyAdam(Adam):
+    def __init__(self, params):
+        super(MyAdam, self).__init__(params, lr=0.002, weight_decay=2e-5, amsgrad=True)
+
+    def get_gradient(self):
+        gradients = []
+        for group in self.param_groups:
+            for p in group["params"]:
+                if p.grad is None:
+                    continue
+                grad = p.grad.numpy().ravel()
+                gradients.append(grad)
+        return np.concatenate(gradients)
