@@ -40,7 +40,7 @@ class MAMOTrainer(BaseTrainer):
         self.trainable_params = trainable_params
         self.opt_losses = self.config['opt_losses']
 
-        self.train_metrics = MetricTracker('loss', 'weighted_loss', *[m.__name__ for m in self.metric_ftns], writer=self.writer)
+        self.train_metrics = MetricTracker('a1', 'a2', 'loss', 'weighted_loss', *[m.__name__ for m in self.metric_ftns], writer=self.writer)
         self.valid_metrics = MetricTracker('loss', 'weighted_loss', *[m.__name__ for m in self.metric_ftns], writer=self.writer)
 
     def _compute_max_expirical_losses(self):
@@ -91,7 +91,7 @@ class MAMOTrainer(BaseTrainer):
                 self.optimizer.zero_grad()
                 losses_computed[self.opt_losses].backward()
                 self.optimizer.step()
-            else:
+            elif self.opt_losses == 2:
                 # calculate the gradients
                 gradients = []
                 for i, loss in enumerate(self.criterion):
@@ -122,30 +122,31 @@ class MAMOTrainer(BaseTrainer):
                 for i, alpha in enumerate(alphas):
                     average_alpha[i] = (cnt - 1) / cnt * \
                         average_alpha[i] + 1 / cnt * alpha
-
+                
+                self.train_metrics.update('a1', alphas[0])
+                self.train_metrics.update('a2', alphas[1])
                 # zero gradient
                 self.optimizer.zero_grad()
                 # backward pass
                 final_loss.backward()
                 # update parameters
                 self.optimizer.step()
-
-            # losses_computed = []
-            # # calculate the gradients
-            # gradients = []
-            # self.optimizer.zero_grad()
-            # for i, loss in enumerate(self.criterion):
-            #     # forward pass
-            #     output = self.model(data)
-            #     # calculate loss
-            #     L = self._cal_loss(loss, output, target, price)
-            #     # backward pass
-            #     L.backward()
-            #     losses_computed.append(L)
-            #     # get gradient for correctness objective
-            #     gradients.append(self.optimizer.get_gradient())
-
-            # pc_grad_update(gradients)
+            elif self.opt_losses == 3:
+                losses_computed = []
+                # calculate the gradients
+                gradients = []
+                self.optimizer.zero_grad()
+                for i, loss in enumerate(self.criterion):
+                    # forward pass
+                    output = self.model(data)
+                    # calculate loss
+                    L = self._cal_loss(loss, output, target, price)
+                    # backward pass
+                    L.backward()
+                    losses_computed.append(L)
+                    # get gradient for correctness objective
+                    gradients.append(self.optimizer.get_gradient())
+                pc_grad_update(gradients)
 
             self.writer.set_step((epoch - 1) * self.len_epoch + batch_idx)
             self.train_metrics.update('loss', losses_computed[0].item())
@@ -194,7 +195,7 @@ class MAMOTrainer(BaseTrainer):
         self.valid_metrics.reset()
         with torch.no_grad():
             for batch_idx, (data, target, price) in enumerate(self.valid_data_loader):
-                data, target = data.to(self.device), target.to(self.device)
+                data, target, price = data.to(self.device), target.to(self.device), price.to(self.device)
 
                 output = self.model(data)
                 loss = self.criterion[0](output, target.float())

@@ -33,7 +33,7 @@ def roc_auc_score(output, target):
     output = output.cpu()
     target = target.cpu()
     with torch.no_grad():
-        return sklearn.metrics.roc_auc_score(target.numpy(), output.numpy())
+        return sklearn.metrics.roc_auc_score(target.detach().numpy(), output.detach().numpy())
 
 
 def roc_auc_score_with_weight(output, target, weight):
@@ -41,4 +41,4 @@ def roc_auc_score_with_weight(output, target, weight):
     target = target.cpu()
     weight = weight.cpu()
     with torch.no_grad():
-        return sklearn.metrics.roc_auc_score(target.numpy(), output.numpy(), sample_weight=weight)
+        return sklearn.metrics.roc_auc_score(target.detach().numpy(), output.detach().numpy(), sample_weight=weight)

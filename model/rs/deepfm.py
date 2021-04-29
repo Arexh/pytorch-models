@@ -60,7 +60,8 @@ class DeepFM(BaseModel):
         X_category_embedding = [torch.unsqueeze(i, 1) for i in X_category_embedding]
         X_category_embedding = torch.cat(X_category_embedding, 1)
 
-        X_ = torch.cat((X[:, 0:self.dense_feat_dim], torch.reshape(X_category_embedding, (len(X), -1))), 1)
+        a = torch.stack(list(torch.reshape(X_category_embedding, (len(X), -1))), dim=0)
+        X_ = torch.cat((X[:, 0:self.dense_feat_dim], a.double()), 1)
         
         logit = self.fm_linear(X.float())
         logit += self.fm(X_category_embedding.float())

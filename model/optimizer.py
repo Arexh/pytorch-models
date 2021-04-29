@@ -88,6 +88,6 @@ class MyAdam(Adam):
             for p in group["params"]:
                 if p.grad is None:
                     continue
-                grad = p.grad.numpy().ravel()
+                grad = p.grad.view(-1)
                 gradients.append(grad)
-        return np.concatenate(gradients)
+        return torch.cat(gradients)
