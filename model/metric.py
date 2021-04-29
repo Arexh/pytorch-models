@@ -1,5 +1,6 @@
 import torch
 import sklearn.metrics
+import numpy as np
 
 
 def accuracy(output, target):
@@ -38,5 +39,6 @@ def roc_auc_score(output, target):
 def roc_auc_score_with_weight(output, target, weight):
     output = output.cpu()
     target = target.cpu()
+    weight = weight.cpu()
     with torch.no_grad():
         return sklearn.metrics.roc_auc_score(target.numpy(), output.numpy(), sample_weight=weight)

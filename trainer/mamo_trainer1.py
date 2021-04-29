@@ -7,7 +7,6 @@ import inspect
 from torch.autograd import Variable
 from copsolver.analytical_solver import AnalyticalSolver
 from commondescentvector.multi_objective_cdv import MultiObjectiveCDV
-from trainer.pcgrad import pc_grad_update
 
 
 
@@ -129,23 +128,6 @@ class MAMOTrainer(BaseTrainer):
                 final_loss.backward()
                 # update parameters
                 self.optimizer.step()
-
-            # losses_computed = []
-            # # calculate the gradients
-            # gradients = []
-            # self.optimizer.zero_grad()
-            # for i, loss in enumerate(self.criterion):
-            #     # forward pass
-            #     output = self.model(data)
-            #     # calculate loss
-            #     L = self._cal_loss(loss, output, target, price)
-            #     # backward pass
-            #     L.backward()
-            #     losses_computed.append(L)
-            #     # get gradient for correctness objective
-            #     gradients.append(self.optimizer.get_gradient())
-
-            # pc_grad_update(gradients)
 
             self.writer.set_step((epoch - 1) * self.len_epoch + batch_idx)
             self.train_metrics.update('loss', losses_computed[0].item())
