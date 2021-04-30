@@ -8,8 +8,7 @@ from torch.autograd import Variable
 from copsolver.analytical_solver import AnalyticalSolver
 from commondescentvector.multi_objective_cdv import MultiObjectiveCDV
 from trainer.pcgrad import pc_grad_update
-
-
+from copsolver.peltr import PELTR
 
 class MAMOTrainer(BaseTrainer):
     """
@@ -42,6 +41,7 @@ class MAMOTrainer(BaseTrainer):
 
         self.train_metrics = MetricTracker('a1', 'a2', 'loss', 'weighted_loss', *[m.__name__ for m in self.metric_ftns], writer=self.writer)
         self.valid_metrics = MetricTracker('loss', 'weighted_loss', *[m.__name__ for m in self.metric_ftns], writer=self.writer)
+        self.pe_ltr = PELTR()
 
     def _compute_max_expirical_losses(self):
         max_losses = [0] * self.losses_num
@@ -117,11 +117,6 @@ class MAMOTrainer(BaseTrainer):
                 # get the final loss to compute the common descent vector
                 final_loss, alphas = self.common_descent_vector.get_descent_vector(
                     losses_computed, gradients)
-
-                # moving average alpha
-                for i, alpha in enumerate(alphas):
-                    average_alpha[i] = (cnt - 1) / cnt * \
-                        average_alpha[i] + 1 / cnt * alpha
                 
                 self.train_metrics.update('a1', alphas[0])
                 self.train_metrics.update('a2', alphas[1])
@@ -147,6 +142,43 @@ class MAMOTrainer(BaseTrainer):
                     # get gradient for correctness objective
                     gradients.append(self.optimizer.get_gradient())
                 pc_grad_update(gradients)
+                self.optimizer.step()
+            elif self.opt_losses == 4:
+                # calculate the gradients
+                gradients = []
+                for i, loss in enumerate(self.criterion):
+                    # forward pass
+                    output = self.model(data)
+                    # calculate loss
+                    L = self._cal_loss(loss, output, target, price)
+                    # zero gradient
+                    self.optimizer.zero_grad()
+                    # backward pass
+                    L.backward()
+                    # get gradient for correctness objective
+                    gradients.append(self.optimizer.get_gradient())
+
+                # get the final loss to compute the common descent vector
+                a1, a2 = self.pe_ltr.solve(gradients[0], gradients[1])
+
+                # calculate the losses
+                # forward pass
+                output = self.model(data)
+
+                for i, loss in enumerate(self.criterion):
+                    L = self._cal_loss(loss, output, target, price)
+                    losses_computed.append(L)
+
+                final_loss = losses_computed[0] * a1 + losses_computed[1] * a2
+                
+                self.train_metrics.update('a1', a1)
+                self.train_metrics.update('a2', a2)
+                # zero gradient
+                self.optimizer.zero_grad()
+                # backward pass
+                final_loss.backward()
+                # update parameters
+                self.optimizer.step()
 
             self.writer.set_step((epoch - 1) * self.len_epoch + batch_idx)
             self.train_metrics.update('loss', losses_computed[0].item())
@@ -171,9 +203,13 @@ class MAMOTrainer(BaseTrainer):
             print("Optimize only logloss")
         elif self.opt_losses == 1:
             print("Optimize only weighted logloss")
-        else:
+        elif self.opt_losses == 2:
             print("Optimize both logloss and weighted logloss")
             print(average_alpha)
+        elif self.opt_losses == 3:
+            print("PCGrad")
+        else:
+            print("PELTR")
         log = self.train_metrics.result()
 
         if self.do_validation:

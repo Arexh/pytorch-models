@@ -55,6 +55,7 @@ class MovieLens1MWithPrices(torch.utils.data.Dataset):
             # normalize features
             data[self.dense_features] = MinMaxScaler(
                     feature_range=(0, 1)).fit_transform(data[self.dense_features])
+            self.prices = data['price']
             self.labels = data['rating']
             self.feature_size = [len(data[i].iloc[:].unique())
                                  for i in self.sparse_features]
