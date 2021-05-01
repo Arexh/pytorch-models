@@ -1,5 +1,5 @@
 {
-    "name": "ML_1M_DeepFM_GMV_AUC_NORMAL",
+    "name": "ML_1M_DeepFM_GMV_AUC_MANUAL",
     "n_gpu": 1,
     "opt_losses": 1,
     "_opt_losses_comment": "0: optimize logloss only, 1: optimize weighted logloss only, 2: optimize both",
@@ -46,7 +46,7 @@
         }
     },
     "trainer": {
-        "epochs": 500,
+        "epochs": 20,
 
         "save_dir": "saved/",
         "save_period": 999,

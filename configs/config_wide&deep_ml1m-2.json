@@ -1,10 +1,10 @@
 {
-    "name": "ML_1M_DeepFM_AUC_NORMAL",
+    "name": "ML_1M_W&D_MGREC_MANUAL",
     "n_gpu": 1,
-    "opt_losses": 0,
+    "opt_losses": 2,
     "_opt_losses_comment": "0: optimize logloss only, 1: optimize weighted logloss only, 2: optimize both",
     "arch": {
-        "type": "DeepFMModel",
+        "type": "WideDeepModel",
         "args": {
             "dense_feat_dim": 2,
             "sparse_feat_dim": 6,

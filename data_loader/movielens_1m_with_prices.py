@@ -75,8 +75,8 @@ class MovieLens1MWithPrices(torch.utils.data.Dataset):
             self.labels = np.load(cache_label_npy_path)
             self.prices = np.load(cache_price_npy_path)
             self.length = len(self.raw_data)
-        # self.prices[self.labels == 1] = 0.1
-        # self.prices[self.labels == 0] = 0.9
+        self.prices[self.labels == 1] = 0.1
+        self.prices[self.labels == 0] = 0.9
         print('Processing finish, time:', time.time() - start_time, 'seconds')
 
     def __getitem__(self, index):
