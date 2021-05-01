@@ -9,6 +9,8 @@ from copsolver.analytical_solver import AnalyticalSolver
 from commondescentvector.multi_objective_cdv import MultiObjectiveCDV
 from trainer.pcgrad import pc_grad_update
 from copsolver.peltr import PELTR
+from utils.pareto_manager import ParetoManager
+
 
 class MAMOTrainer(BaseTrainer):
     """
@@ -42,6 +44,7 @@ class MAMOTrainer(BaseTrainer):
         self.train_metrics = MetricTracker('a1', 'a2', 'loss', 'weighted_loss', *[m.__name__ for m in self.metric_ftns], writer=self.writer)
         self.valid_metrics = MetricTracker('loss', 'weighted_loss', *[m.__name__ for m in self.metric_ftns], writer=self.writer)
         self.pe_ltr = PELTR()
+        self.pareto_manager = ParetoManager()
 
     def _compute_max_expirical_losses(self):
         max_losses = [0] * self.losses_num
@@ -240,6 +243,7 @@ class MAMOTrainer(BaseTrainer):
                 self.valid_metrics.update('loss', loss.item())
                 w_loss = self.criterion[1](output, target.float(), price)
                 self.valid_metrics.update('weighted_loss', w_loss.item())
+                ms = [1 - loss.item(), 1 - w_loss.item()]
                 for met in self.metric_ftns:
                     para_nums = len(inspect.getargspec(met)[0])
                     if para_nums == 2:
@@ -247,6 +251,9 @@ class MAMOTrainer(BaseTrainer):
                     elif para_nums == 3:
                         self.valid_metrics.update(met.__name__, met(output, target, price))
 
+        l1, l2 = self.valid_metrics.avg('loss'), self.valid_metrics.avg('weighted_loss')
+        self.pareto_manager.add_solution([1 - l1, 1 - l2])
+        self.logger.info("pareto: " + str([[1 - i[0][0], 1 - i[0][1]] for i in self.pareto_manager._pareto_front]))
         return self.valid_metrics.result()
 
     def _progress(self, batch_idx):
