@@ -1,12 +1,22 @@
 import torch.nn.functional as F
 import numpy as np
+import torch
 
 
 def nll_loss(output, target):
     return F.nll_loss(output, target)
 
 def bce_log_loss(output, target):
-    return F.binary_cross_entropy(output, target, reduction='mean')
+    [m] = output.shape
+    if torch.isnan(output).any():
+        print("Found nan")
+        return output
+    return (-1 * torch.sum((target * torch.log(output) + (1 - target) * torch.log(1 - output)))) / m
 
 def bce_log_loss_with_weight(output, target, price):
-    return F.binary_cross_entropy(output, target, reduction='mean', weight=price)
+    [m] = output.shape
+    if torch.isnan(output).any():
+        print(price)
+        print("Found nan")
+        return output
+    return (-1 * torch.sum((target * torch.log(output) + (1 - target) * torch.log(1 - output) * price))) / m
