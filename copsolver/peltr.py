@@ -6,7 +6,7 @@ class PELTR():
     def __init__(self):
         self.w1 = 0.5
         self.w2 = 0.5
-        self.c1 = 0.6
+        self.c1 = 0.2
         self.c2 = 0.2
 
 

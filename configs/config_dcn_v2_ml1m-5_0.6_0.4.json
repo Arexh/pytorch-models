@@ -1,10 +1,12 @@
 {
-    "name": "ML_1M_DeepFM_AUC",
+    "name": "ML_1M_DCN_V2_0.6_0.4",
     "n_gpu": 1,
-    "opt_losses": 0,
+    "opt_losses": 5,
+    "a1": 0.6,
+    "a2": 0.4,
     "_opt_losses_comment": "0: optimize logloss only, 1: optimize weighted logloss only, 2: optimize both",
     "arch": {
-        "type": "DeepFMModel",
+        "type": "DCNV2Model",
         "args": {
             "dense_feat_dim": 2,
             "sparse_feat_dim": 6,

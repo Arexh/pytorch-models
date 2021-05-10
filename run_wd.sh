@@ -1,0 +1,5 @@
+python train_mamo.py -c "./configs/config_wide&deep_ml1m-0.json"
+python train_mamo.py -c "./configs/config_wide&deep_ml1m-1.json"
+python train_mamo.py -c "./configs/config_wide&deep_ml1m-2.json"
+python train_mamo.py -c "./configs/config_wide&deep_ml1m-3.json"
+python train_mamo.py -c "./configs/config_wide&deep_ml1m-4.json"

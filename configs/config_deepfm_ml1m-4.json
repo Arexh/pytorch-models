@@ -1,5 +1,5 @@
 {
-    "name": "ML_1M_DeepFM_PELTR_MANUAL_0.6,0.2",
+    "name": "ML_1M_DeepFM_PELTR_0.6,0.2",
     "n_gpu": 1,
     "opt_losses": 4,
     "_opt_losses_comment": "0: optimize logloss only, 1: optimize weighted logloss only, 2: optimize both",

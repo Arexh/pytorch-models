@@ -182,6 +182,16 @@ class MAMOTrainer(BaseTrainer):
                 final_loss.backward()
                 # update parameters
                 self.optimizer.step()
+            elif self.opt_losses == 5:
+                output = self.model(data)
+                for loss in self.criterion:
+                    losses_computed.append(self._cal_loss(loss, output, target, price))
+                
+                final_loss = losses_computed[0] * self.config['a1'] + losses_computed[1] * self.config['a2']
+
+                self.optimizer.zero_grad()
+                final_loss.backward()
+                self.optimizer.step()
 
             self.writer.set_step((epoch - 1) * self.len_epoch + batch_idx)
             self.train_metrics.update('loss', losses_computed[0].item())
@@ -211,8 +221,10 @@ class MAMOTrainer(BaseTrainer):
             print(average_alpha)
         elif self.opt_losses == 3:
             print("PCGrad")
-        else:
+        elif self.opt_losses == 4:
             print("PELTR")
+        else:
+            print(self.config['a1'], self.config['a2'])
         log = self.train_metrics.result()
 
         if self.do_validation:
